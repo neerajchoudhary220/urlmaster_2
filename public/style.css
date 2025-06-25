@@ -1,0 +1,251 @@
+      :root{
+        --cyan-color:#00ffff;
+      }
+      body {
+        background-color: #0d1117;
+        font-family: "Share Tech Mono", monospace;
+        color: var(--cyan-color);
+      }
+
+      .card {
+        background-color: #0a0f1a;
+        border: 1px solid var(--cyan-color);
+        border-radius: 1rem;
+        box-shadow: 0 0 20px #00ffff88;
+        overflow: hidden;
+      }
+
+      .card-header {
+        background-color: #081c1c;
+        border-bottom: 1px solid #00ffff;
+        color: #00ffff;
+        font-weight: bold;
+        font-size: 1.2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+      }
+
+      .card-header .btn {
+        margin-left: 10px;
+      }
+
+      .btn,
+      .btn-sm {
+        background: transparent !important;
+        border: 1px solid #00ffff !important;
+        color: #00ffff !important;
+        transition: all 0.3s ease-in-out;
+        font-family: "Share Tech Mono", monospace;
+      }
+
+      .btn:hover,
+      .btn-sm:hover {
+        background-color: #00ffff !important;
+        color: #0d1117 !important;
+        box-shadow: 0 0 10px #00ffff;
+      }
+
+      .btn-danger,
+      .btn-warning,
+      .btn-success {
+        background: transparent !important;
+        border-color: #00ffff !important;
+        color: #00ffff !important;
+      }
+
+      .table thead {
+        background-color: #0e1e1e;
+        color: #00ffff;
+        text-shadow: 0 0 2px #00ffff;
+      }
+
+      .table-hover tbody tr:hover {
+        background-color: #112e2e;
+        color: #ffffff;
+      }
+
+      .form-control {
+        background-color: #000;
+        border: 1px solid #00ffff;
+        color: #00ffff;
+        font-family: "Share Tech Mono", monospace;
+      }
+
+      .form-control:focus {
+        background-color: #000;
+        border: 1px solid #00ffff;
+        box-shadow: 0 0 10px #00ffff;
+        color: #00ffff;
+      }
+
+      .table-bordered {
+        border-color: #00ffff44;
+      }
+      tbody {
+        background: #081c1c !important;
+      }
+
+      .modal-content {
+        background-color: #0a0f1a;
+        color: #00ffff;
+        border: 1px solid #00ffff;
+        box-shadow: 0 0 20px #00ffff88;
+      }
+      tbody,
+      td,
+      tfoot,
+      th,
+      thead,
+      tr {
+        border-color: inherit;
+        border-style: solid;
+        border-width: 0;
+        background: #081c1c !important;
+      }
+
+      .modal-header {
+        border-bottom: 1px solid #00ffff;
+      }
+
+      .form-label {
+        color: #a0fefb;
+      }
+
+      .btn-close {
+        filter: invert(1);
+      }
+
+      .text-cyan {
+        color: #00ffff !important;
+      }
+
+      .bg-white {
+        background-color: #0d1117 !important;
+      }
+
+      .border {
+        border: 1px solid #00ffff !important;
+      }
+
+      .table td,
+      .table th {
+        vertical-align: middle;
+      }
+      .table > :not(caption) > * > * {
+        color: #00ffff;
+      }
+      .ellipsis {
+        cursor: pointer;
+        width: 200px;
+        display: inline-block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      input::placeholder {
+        color: rgb(2, 101, 101) !important;
+      }
+     
+
+      /* loading  */
+      .hacker-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0d1117dd;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader-content {
+  padding: 30px 50px;
+  border: 2px solid #00ffff;
+  border-radius: 10px;
+  background-color: #0a0f1a;
+  box-shadow: 0 0 20px #00ffff88;
+  text-align: center;
+}
+
+.loading-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.5rem;
+  color: #00ffff;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+.dots::after {
+  content: '';
+  display: inline-block;
+  width: 1ch;
+  animation: dot-flash 1.2s steps(3, end) infinite;
+}
+
+@keyframes dot-flash {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
+}
+
+/* Hacker alert box */
+.hacker-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(13, 17, 23, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10500;
+}
+
+.hacker-alert-box {
+  background-color: #0a0f1a;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #00ffff88;
+  text-align: center;
+  width: 100%;
+  max-width: 400px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+.hacker-alert-box h5 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 5px #00ffff;
+}
+
+#hacker-alert-message {
+  font-size: 1rem;
+  text-shadow: 0 0 2px #00ffff;
+}
+
+.btn-hacker {
+  background-color: transparent !important;
+  border: 1px solid #00ffff !important;
+  color: #00ffff !important;
+  font-family: 'Share Tech Mono', monospace;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-hacker:hover {
+  background-color: #00ffff !important;
+  color: #0d1117 !important;
+  box-shadow: 0 0 10px #00ffff;
+}
