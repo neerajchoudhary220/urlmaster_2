@@ -2,23 +2,21 @@ from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel,validator
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
-from urlmaster.services.directory import getDirectoriesList,cloneDirectory,open_directory,addParentDirectory
-from urlmaster.services.gitoperations import switch_branch
-from urlmaster.services.herd import link_with_herd
-from urlmaster.services.cloudflared import get_public_url,kill_tunnel_by_url,replace_env_values
+from services.directory import getDirectoriesList,cloneDirectory,open_directory,addParentDirectory
+from services.gitoperations import switch_branch
+from services.herd import link_with_herd
+from services.cloudflared import get_public_url,kill_tunnel_by_url,replace_env_values
 import os,logging
 from importlib import resources
-log_path = resources.files("urlmaster").joinpath("services", "your_log_file.log")
+# log_path = resources.files("urlmaster").joinpath("services", "your_log_file.log")
 # Configure logging
 logging.basicConfig(
-    filename=str(log_path),
+    filename="err.log",
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
 app = FastAPI()
-# public_dir = Path(__file__).resolve().parent / "public"
-# app.mount("/", StaticFiles(directory=public_dir, html=True), name="static")
 
 app.add_middleware(
     CORSMiddleware,
@@ -56,10 +54,7 @@ def set_parent_directory(directory: DirectoryPath):
 
 @app.get('/directory/')
 def get_branch_listing():
-    try:
-        return {"data":getDirectoriesList()}
-    except Exception as e:
-        logging.exception(e)
+    return {"data":getDirectoriesList()}
     
 
 @app.get('/directory/clone/')
@@ -106,6 +101,7 @@ def generate_public_url(herd_link: str, dir_path: str):
     
 @app.delete('/cloudflared/')
 def delete_cloudflared_tunnel(herd_link:str):
+    print("working...")
     kill_tunnel_by_url(herd_link)
     return {"msg":"Dleted Public URL successfully"}
     

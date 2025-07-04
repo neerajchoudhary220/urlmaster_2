@@ -3,26 +3,34 @@ from fastapi import HTTPException
 from pathlib import Path
 time
 from datetime import datetime
-TUNNELS_FILE = Path(__file__).parent.parent /"active_tunnels.json"
 
+TUNNELS_FILE =Path("active_tunnels.json")
+# Disable insecure HTTPS warnings
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Configure logging
 logging.basicConfig(
-    filename='tunnel_errors.log',
+    filename='tunnel_err.log',
     level=logging.ERROR,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
+
 
 def get_public_url(herd_link: str):
     try:
         herd_clean = re.sub(r'^https?://', '', herd_link).strip('/').replace('.test','')
         local_port = 80
-        remote_port = random.randint(3000, 9999)
+        remote_port = random.randint(3000, 65000)
         ssh_user = "tunneluser"
         ssh_host = "neerajchoudhary.fun"
         ssh_key = "~/.ssh/id_tunnel"
+        #Regenerate Public URL
+        if get_remote_port(herd_link):
+            remote_port =get_remote_port(herd_link)
+            
         public_subdomain = f"{herd_clean}-{remote_port}"
         public_url = f"https://{public_subdomain}.{ssh_host}"
-
+        
+            
         # SSH Tunnel
         ssh_command = [
             "ssh",
@@ -38,54 +46,63 @@ def get_public_url(herd_link: str):
             text=True
         )
 
-        # Check if the public URL is accessible
-        res = requests.get(public_url, verify=False)
-        if res.status_code == 200:
-            print(process.pid)
-            print(public_url)
-            return public_url
-        else:
-            logging.error(f"Tunnel setup failed, HTTP {res.status_code} for {public_url}")
-            return None
+        # Retry loop to wait for tunnel readiness
+        for attempt in range(10):
+            try:
+                res = requests.get(public_url, verify=False, timeout=2)
+                if res.status_code == 200:
+                    print(process.pid)
+                    print(public_url)
+                    tunnel_info = {"public_url": public_url, "pid": process.pid, "herd_link": herd_link,"remote_port":remote_port}
+                    # if get_remote_port(herd_link):
+                    save_tunnel(tunnel_info)
+                    return public_url
+            except requests.RequestException:
+                pass
+            time.sleep(1.5)
+
+        logging.error(f"Tunnel setup failed after retries for {public_url}")
+        return None
 
     except Exception as e:
         logging.exception(f"Error setting up tunnel for {herd_link}")
         return None
-def get_cloudflared_public_url(url: str):
+
+# def get_cloudflared_public_url(url: str):
 
 
-    domain = re.sub(r'^https?://', '', url).strip('/')
-    print(f"domain is {domain}")
-    CLOUDFLARED_PATH = shutil.which("cloudflared") or"/opt/homebrew/bin/cloudflared"
-    process = subprocess.Popen(
-        [CLOUDFLARED_PATH, "tunnel", "--url", "http://127.0.0.1:80", "--http-host-header", domain],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True
-    )
+#     domain = re.sub(r'^https?://', '', url).strip('/')
+#     print(f"domain is {domain}")
+#     CLOUDFLARED_PATH = shutil.which("cloudflared") or"/opt/homebrew/bin/cloudflared"
+#     process = subprocess.Popen(
+#         [CLOUDFLARED_PATH, "tunnel", "--url", "http://127.0.0.1:80", "--http-host-header", domain],
+#         stdout=subprocess.PIPE,
+#         stderr=subprocess.STDOUT,
+#         text=True
+#     )
 
-    public_url = None
-    for line in process.stdout:
-        match = re.search(r'(https://[a-zA-Z0-9-]+\.trycloudflare\.com)', line)
-        if match:
-            public_url = match.group(1)
-            break
+#     public_url = None
+#     for line in process.stdout:
+#         match = re.search(r'(https://[a-zA-Z0-9-]+\.trycloudflare\.com)', line)
+#         if match:
+#             public_url = match.group(1)
+#             break
 
-    if not public_url:
-        process.terminate()
-        raise HTTPException(400,detail="❌ Tunnel URL not found.")
-    time.sleep(3)
-    res = requests.get(public_url,verify=False)
-    print(process.pid)
-    print(public_url)
-    if res.status_code==200:
-        tunnel_info = {"public_url": public_url, "pid": process.pid, "herd_link": urherd_linkl}
-        save_tunnel(tunnel_info)
-        print(process.pid)
+#     if not public_url:
+#         process.terminate()
+#         raise HTTPException(400,detail="❌ Tunnel URL not found.")
+#     time.sleep(3)
+#     res = requests.get(public_url,verify=False)
+#     print(process.pid)
+#     print(public_url)
+#     if res.status_code==200:
+#         tunnel_info = {"public_url": public_url, "pid": process.pid, "herd_link": urherd_linkl}
+#         save_tunnel(tunnel_info)
+#         print(process.pid)
         
-        return public_url
-    else:
-        return HTTPException(400,' Tunnel issue')
+#         return public_url
+#     else:
+#         return HTTPException(400,' Tunnel issue')
   
 
 def save_tunnel(tunnel_info: dict) -> str:
@@ -155,6 +172,15 @@ def kill_tunnel_by_url(herd_link: str):
     if not killed:
         raise HTTPException(400,detail="Not tunnel active right now")
     return True
+
+def get_remote_port(herd_link:str):
+    with open("active_tunnels.json","r") as f:
+        tunnels = json.load(f)
+    
+    for tunnel in tunnels:
+        if tunnel['herd_link'] == herd_link:
+            return tunnel['remote_port']
+    return None
 
 def get_tunnel(herd_link: str, file_path: str = 'active_tunnels.json') -> str | None:
         if not os.path.exists(TUNNELS_FILE):

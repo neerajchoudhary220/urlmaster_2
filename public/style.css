@@ -1,8 +1,9 @@
       :root{
         --cyan-color:#00ffff;
+        --navy-dark:#0d1117;
       }
       body {
-        background-color: #0d1117;
+        background-color:var(--navy-dark);
         font-family: "Share Tech Mono", monospace;
         color: var(--cyan-color);
       }
@@ -122,7 +123,7 @@
       }
 
       .bg-white {
-        background-color: #0d1117 !important;
+        background-color: var(--navy-dark) !important;
       }
 
       .border {
@@ -185,6 +186,45 @@
   width: 1ch;
   animation: dot-flash 1.2s steps(3, end) infinite;
 }
+.alert-cyan{
+  background-color: var(--cyan-color) !important;
+  color:var(--navy-dark) !important;
+
+}
+
+/* Dropdown Menu */
+    .dropdown-hacker .dropdown-toggle {
+      background: transparent;
+      color: #00ffff;
+      border: 2px solid #00ffff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 20px;
+      box-shadow: 0 0 8px #00ffff80;
+    }
+
+    .dropdown-menu {
+      background-color: #0a0f1a;
+      border: 1px solid #00ffff;
+      box-shadow: 0 0 12px #00ffff60;
+      border-radius: 10px;
+      padding: 0.5rem 0;
+    }
+
+    .dropdown-item {
+      color: #00ffff;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    .dropdown-item:hover {
+      background-color: #00ffff22;
+      color: #00ffff;
+    }
+
+    .dropdown-item i {
+      margin-right: 8px;
+    }
 
 @keyframes dot-flash {
   0% {

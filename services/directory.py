@@ -9,8 +9,7 @@ import platform
 import subprocess
 import os
 # data_file = str(resources.files("urlmaster.services").joinpath("data.json"))
-data_file = Path(__file__).parent.parent / "data.json"
-print(f"data file:{data_file}")
+data_file = Path("data.json")
 def addParentDirectory(parent_dir:str):
     if len(parent_dir) == 0:
         raise HTTPException(400,detail="Directory can't be empty")
